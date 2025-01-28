@@ -62,3 +62,6 @@ python main.py
 ## 必要なライブラリ
 - OpenCV (cv2)
 - NumPy
+
+## ChatGPTとの対話履歴
+[ここから閲覧してください。](https://chatgpt.com/share/67986096-50ec-800d-9635-595710e726f2)
