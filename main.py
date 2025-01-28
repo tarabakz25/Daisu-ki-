@@ -3,8 +3,8 @@ import numpy as np
 
 # 変形パラメータ (trackbar で操作するのでグローバルに置いておく)
 params = {
-    "tx": 0,
-    "ty": 0,
+    "tx": 0,   # 平行移動 x
+    "ty": 0,   # 平行移動 y
     # スケールは trackbar 上で 1～20 → 実際は 0.1～2.0 にマッピング
     "sx": 10,
     "sy": 10,
@@ -98,7 +98,6 @@ def transform_image_autosize(img, M_3x3):
     M_2x3 = M_final[:2, :3]
 
     # warpAffine
-    # (width_new, height_new) ははみ出しがないように自動計算したサイズ
     transformed = cv2.warpAffine(img, M_2x3, (width_new, height_new))
     return transformed
 
@@ -117,11 +116,12 @@ def resize_for_display(img, max_w=1280, max_h=800):
 # ---- 以下、Trackbarのコールバック ----
 
 def on_change_tx(v):
-    # trackbar: 0~1000 → 実際: -500~+500
-    params["tx"] = v - 500
+    # 0~200 → -100~+100
+    params["tx"] = v - 100
 
 def on_change_ty(v):
-    params["ty"] = v - 500
+    # 0~200 → -100~+100
+    params["ty"] = v - 100
 
 def on_change_sx(v):
     # 1~20 → 0.1~2.0
@@ -142,6 +142,7 @@ def on_change_shx(v):
     params["shx"] = (v - 10) / 10.0
 
 def on_change_shy(v):
+    # 0~20 → -10~+10 → -1.0~+1.0
     params["shy"] = (v - 10) / 10.0
 
 def main():
@@ -151,12 +152,11 @@ def main():
         print("画像が読み込めませんでした:", img_path)
         return
 
-    # ウィンドウ作成
     cv2.namedWindow("FreeTransform", cv2.WINDOW_NORMAL)
 
-    # トラックバーを作成
-    cv2.createTrackbar("TX", "FreeTransform", 500, 1000, on_change_tx)  # -500~+500
-    cv2.createTrackbar("TY", "FreeTransform", 500, 1000, on_change_ty)
+    # トラックバーを作成 (tx, ty も追加)
+    cv2.createTrackbar("TX", "FreeTransform", 100, 200, on_change_tx)  # 0~200 => -100~+100
+    cv2.createTrackbar("TY", "FreeTransform", 100, 200, on_change_ty)  # 0~200 => -100~+100
 
     cv2.createTrackbar("SX", "FreeTransform", 10, 20, on_change_sx)    # 1~20 => 0.1~2.0
     cv2.createTrackbar("SY", "FreeTransform", 10, 20, on_change_sy)
